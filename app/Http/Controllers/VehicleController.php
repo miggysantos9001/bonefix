@@ -31,4 +31,52 @@ class VehicleController extends Controller
         $data->appends(Request::all());
         return view('admin.vehicles.index',compact('data'));
     }
+
+    public function store(){
+        $validator = Validator::make(Request::all(), [
+            'name'                      =>  'required|unique:vehicles',
+        ],
+        [
+            'name.required'             =>  'Vehicle Name Required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        Vehicle::create([
+            'name'      =>      Request::get('name'),
+        ]);
+
+        Alert::success('Success', 'Vehicle Created Successfully');
+        return redirect()->back();
+    }
+
+    public function update($id){
+        $vehicle = Vehicle::find($id);
+        $validator = Validator::make(Request::all(), [
+            'name'                      =>  "required|unique:agents,name,$vehicle->id,id",
+        ],
+        [
+            'name.required'             =>  'Vehicle Name Required',
+        ]);
+
+
+        if ($validator->fails()) {
+            foreach($validator->errors()->all() as $error) {
+                toastr()->warning($error);
+            }
+            return redirect()->back()
+            ->withInput();
+        }
+
+        $vehicle->update([
+            'name'      =>      Request::get('name'),
+        ]);
+
+        Alert::success('Success', 'Vehicle Updated Successfully');
+        return redirect()->back();
+    }
 }

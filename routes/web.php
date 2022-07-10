@@ -26,5 +26,7 @@ Route::resource('/branches','BranchController');
 Route::resource('/hospitals','HospitalController');
 Route::resource('/suppliers','SupplierController');
 Route::resource('/surgeons','SurgeonController');
+Route::resource('/technicians','TechnicianController');
+Route::resource('/usertypes','UsertypeController');
 Route::resource('/vehicles','VehicleController');
 

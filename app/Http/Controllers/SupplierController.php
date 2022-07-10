@@ -31,4 +31,61 @@ class SupplierController extends Controller
         $data->appends(Request::all());
         return view('admin.suppliers.index',compact('data'));
     }
+
+    public function store(){
+        $validator = Validator::make(Request::all(), [
+            'name'                      =>  'required',
+            'address'                   =>  'required',
+            'email'                     =>  'required',
+            'contact'                   =>  'required',
+            'contact_person'            =>  'required',
+        ],
+        [
+            'name.required'             =>  'Supplier Name Required',
+            'address.required'          =>  'Supplier Address Required',
+            'email.required'            =>  'Supplier Email Required',
+            'contact.required'          =>  'Supplier Contact # Required',
+            'contact_person.required'   =>  'Supplier Contact Person Required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        Supplier::create(Request::all());
+
+        Alert::success('Success', 'Supplier Created Successfully');
+        return redirect()->back();
+    }
+
+    public function update($id){
+        $supplier = Supplier::find($id);
+        $validator = Validator::make(Request::all(), [
+            'name'                      =>  'required',
+            'address'                   =>  'required',
+            'email'                     =>  'required',
+            'contact'                   =>  'required',
+            'contact_person'            =>  'required',
+        ],
+        [
+            'name.required'             =>  'Supplier Name Required',
+            'address.required'          =>  'Supplier Address Required',
+            'email.required'            =>  'Supplier Email Required',
+            'contact.required'          =>  'Supplier Contact # Required',
+            'contact_person.required'   =>  'Supplier Contact Person Required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        $supplier->update(Request::all());
+
+        Alert::success('Success', 'Supplier Updated Successfully');
+        return redirect()->back();
+    }
 }

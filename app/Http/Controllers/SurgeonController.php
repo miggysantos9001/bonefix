@@ -33,4 +33,50 @@ class SurgeonController extends Controller
         $branches = Branch::pluck('name','id');
         return view('admin.surgeons.index',compact('data','branches'));
     }
+
+    public function store(){
+    	$validator = Validator::make(Request::all(), [
+    		'branch_id'					=>	'required',
+		    'name'						=>	'required|unique:surgeons',
+		],
+		[
+			'branch_id.required'		=>	'Please Select Branch',
+		    'name.required'     		=>	'Surgeon Name Required',
+		]);
+
+		if ($validator->fails()) {
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+		Surgeon::create(Request::all());
+
+		Alert::success('Success', 'Surgeon Created Successfully');
+    	return redirect()->back();
+    }
+
+    public function update($id){
+		$surgeon = Surgeon::find($id);
+		$validator = Validator::make(Request::all(), [
+			'branch_id'					=>	'required',
+		    'name'						=>	"required|unique:surgeons,name,$surgeon->id,id",
+		],
+		[
+			'branch_id.required'		=>	'Please Select Branch',
+		    'name.required'     		=>	'Surgeon Name Required',
+		]);
+
+
+		if ($validator->fails()) {
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+		$surgeon->update(Request::all());
+
+		Alert::success('Success', 'Surgeon Updated Successfully');
+    	return redirect()->back();
+    }
 }

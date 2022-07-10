@@ -36,4 +36,72 @@ class HospitalController extends Controller
         $regions = Region::orderBy('id')->get()->pluck('name','id');
         return view('admin.hospitals.index',compact('data','branches','regions'));
     }
+
+    public function store(){
+    	$validator = Validator::make(Request::all(), [
+    		'branch_id'					=>	'required',
+		    'name'						=>	'required|unique:hospitals',
+		    'code'						=>	'required|unique:hospitals',
+		],
+		[
+			'branch_id.required'		=>	'Please Select Branch',
+		    'name.required'     		=>	'Hospital Name Required',
+		    'code.required'     		=>	'Hospital Code Required',
+		]);
+
+		if ($validator->fails()) {
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        $data = Request::except('region');
+
+        if(Request::get('region') == 1){
+            $region = 1;
+        }else{
+            $region = 0;
+        }
+
+        $data = Arr::add($data,'region',$region);
+		Hospital::create($data);
+
+		Alert::success('Success', 'Hospital Created Successfully');
+    	return redirect()->back();
+    }
+
+    public function update($id){
+		$hospital = Hospital::find($id);
+		$validator = Validator::make(Request::all(), [
+			'branch_id'					=>	'required',
+		    'name'						=>	"required|unique:hospitals,name,$hospital->id,id",
+		    'code'						=>	"required|unique:hospitals,code,$hospital->id,id",
+		],
+		[
+			'branch_id.required'		=>	'Please Select Branch',
+		    'name.required'     		=>	'Hospital Name Required',
+		    'code.required'     		=>	'Hospital Code Required',
+		]);
+
+
+		if ($validator->fails()) {
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        $data = Request::except('region');
+
+        if(Request::get('region') == 1){
+            $region = 1;
+        }else{
+            $region = 0;
+        }
+
+        $data = Arr::add($data,'region',$region);
+		$hospital->update($data);
+
+		Alert::success('Success', 'Hospital Updated Successfully');
+    	return redirect()->back();
+    }
 }

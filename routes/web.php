@@ -23,7 +23,13 @@ Route::post('/dashboard/changepassword/{id}','DashboardController@post_changepas
 
 Route::resource('/agents','AgentController');
 Route::resource('/branches','BranchController');
+Route::resource('/details','DetailController');
+Route::resource('/expense-report-entries','ExpenseReportController');
 Route::resource('/hospitals','HospitalController');
+Route::resource('/other-expenses','OtherExpenseController');
+Route::resource('/payment-type-details','PaymentTypeDetailController');
+Route::resource('/payment-types','PaymentTypeController');
+Route::resource('/receipts','ReceiptController');
 Route::resource('/suppliers','SupplierController');
 Route::resource('/surgeons','SurgeonController');
 Route::resource('/technicians','TechnicianController');
